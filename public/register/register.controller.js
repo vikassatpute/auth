@@ -5,7 +5,7 @@
         .module('app')
         .controller('RegisterController', RegisterController);
 
-    RegisterController.$inject = ['UserService', '$location', '$rootScope', 'FlashService'];
+    RegisterController.$inject = ['UserService', '$location', '$rootScope', 'FlashService', '$http'];
     function RegisterController(UserService, $location, $rootScope, FlashService, $http) {
         var vm = this;
 
@@ -13,10 +13,6 @@
 
         function register() {
             vm.dataLoading = true;
-            $http.get("api/register")
-            .then(function(response) {
-                $scope.myWelcome = response.data;
-            });
             $http({
                 method: 'POST',
                 url: 'api/register',

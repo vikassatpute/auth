@@ -44,9 +44,11 @@ app.get('/setup', function(req, res) {
 
 	// create a sample user
 	var nick = new User({
-		name: 'Nick Cerminara',
-		password: 'password',
-		admin: true
+		fname: 'vikas',
+    lname: 'satpute',
+    username: 'vikassatpute',
+    password: 'vikas123#',
+    admin: true
 	});
 	nick.save(function(err) {
 		if (err) throw err;
@@ -68,8 +70,8 @@ app.get('/setup', function(req, res) {
 var apiRoutes = express.Router();
 
 apiRoutes.post('/register', function(newUser, callback) {
-	cosnole.log(newUser);
-	var me = this;
+	console.log(newUser);
+	/*var me = this;
   me.userModel.findOne({ email: newUser.email }, function (err, user) {
 
       if (err) {
@@ -106,7 +108,7 @@ apiRoutes.post('/register', function(newUser, callback) {
           });
       }
 
-  });
+  });*/
 });
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this isnt authenticated)
@@ -116,7 +118,7 @@ apiRoutes.post('/authenticate', function(req, res) {
 
 	// find the user
 	User.findOne({
-		name: req.body.name
+		name: req.body.username
 	}, function(err, user) {
 
 		if (err) throw err;
