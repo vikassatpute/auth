@@ -17,27 +17,36 @@
         })();
 
         function login() {
+            console.log('vm.user-->',vm);
+            var user = {
+                username: vm.username,
+                password: vm.password
+            };
             vm.dataLoading = true;
-            $http({
-                method: 'POST',
-                url: 'api/authenticate',
-                data: vm.user,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function (data, status, headers, config) {
-                console.log(data,status);
-            }).error(function (data, status, header, config) {
-                console.log(data,status);
+            // $http({
+            //     method: 'POST',
+            //     url: 'api/authenticate',
+            //     data: user
+            // }).success(function (data, status, headers, config) {
+            //     console.log(data,status);
+            //     AuthenticationService.SetCredentials(vm.username, vm.password);
+            //     $location.path('/');
+            // }).error(function (data, status, header, config) {
+            //     console.log(data,status);
+            //     FlashService.Error(response.message);
+            //     vm.dataLoading = false;
 
-            });
-            /*AuthenticationService.Login(vm.username, vm.password, function (response) {
+            // });
+            AuthenticationService.Login(vm.username, vm.password, function (response) {
+                console.log(response);
                 if (response.success) {
-                    AuthenticationService.SetCredentials(vm.username, vm.password);
+                    AuthenticationService.SetCredentials(vm.username, vm.password, response.token);
                     $location.path('/');
                 } else {
                     FlashService.Error(response.message);
                     vm.dataLoading = false;
                 }
-            });*/
+            });
         };
     }
 

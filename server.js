@@ -70,20 +70,24 @@ app.get('/setup', function(req, res) {
 var apiRoutes = express.Router();
 
 apiRoutes.post('/register', function(newUser, callback) {
-	console.log(newUser);
-	/*var me = this;
-  me.userModel.findOne({ email: newUser.email }, function (err, user) {
-
+	console.log(newUser.body);
+  var userObj = newUser.body;
+	var me = this;
+  User.findOne({email: newUser.body.email}, function (err, user) {
       if (err) {
+        console.log('err');
           return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
       }
 
       if (user) {
+        console.log('user->',user);
           return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.EMAIL_ALREADY_EXISTS } }));
       } else {
+        console.log('else user->',user);
 
-          newUser.save(function (err, user, numberAffected) {
+          User.save(function (err, user, numberAffected) {
 
+              console.log('save->',err);
               if (err) {
                   return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
               }
@@ -108,7 +112,7 @@ apiRoutes.post('/register', function(newUser, callback) {
           });
       }
 
-  });*/
+  });
 });
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this isnt authenticated)
@@ -116,16 +120,20 @@ apiRoutes.post('/register', function(newUser, callback) {
 // http://localhost:8080/api/authenticate
 apiRoutes.post('/authenticate', function(req, res) {
 
-	// find the user
-	User.findOne({
-		name: req.body.username
-	}, function(err, user) {
+      //console.log('res',res);
+      console.log('req.body-->',req.body);
+      console.log(req.body.username);
+  // find the user
+  User.findOne({
+    username: req.body.username
+  }, function(err, user) {
 
-		if (err) throw err;
+    if (err) throw err;
 
-		if (!user) {
-			res.json({ success: false, message: 'Authentication failed. User not found.' });
-		} else if (user) {
+    if (!user) {
+      res.json({ success: false, message: 'Authentication failed. User not found.' });
+    } else if (user) {
+      console.log(user);
 
 			// check if password matches
 			if (user.password != req.body.password) {
@@ -157,7 +165,9 @@ apiRoutes.use(function(req, res, next) {
 
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.param('token') || req.headers['x-access-token'];
-
+  console.log('req.body.token',req.body);
+  console.log("req.param('token')",req.param('token'));
+  console.log("req.headers['x-access-token']",req.headers['x-access-token']);
 	// decode token
 	if (token) {
 
@@ -194,6 +204,7 @@ apiRoutes.get('/', function(req, res) {
 
 apiRoutes.get('/users', function(req, res) {
 	User.find({}, function(err, users) {
+    console.log(users);
 		res.json(users);
 	});
 });

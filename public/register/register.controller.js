@@ -13,26 +13,26 @@
 
         function register() {
             vm.dataLoading = true;
-            $http({
-                method: 'POST',
-                url: 'api/register',
-                data: vm.user,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function (data, status, headers, config) {
+            // $http({
+            //     method: 'POST',
+            //     url: 'api/register',
+            //     data: vm
+            // }).success(function (data, status, headers, config) {
 
-            }).error(function (data, status, header, config) {
+            // }).error(function (data, status, header, config) {
 
+            // });
+            console.log(vm.user);
+            UserService.Create(vm.user)
+            .then(function (response) {
+                if (response.success) {
+                    FlashService.Success('Registration successful', true);
+                    $location.path('/login');
+                } else {
+                    FlashService.Error(response.message);
+                    vm.dataLoading = false;
+                }
             });
-            // UserService.Create(vm.user)
-            //     .then(function (response) {
-            //         if (response.success) {
-            //             FlashService.Success('Registration successful', true);
-            //             $location.path('/login');
-            //         } else {
-            //             FlashService.Error(response.message);
-            //             vm.dataLoading = false;
-            //         }
-            //     });
         }
     }
 
