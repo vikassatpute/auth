@@ -193,5 +193,11 @@ app.use('/api', apiRoutes);
 // =================================================================
 // start the server ================================================
 // =================================================================
-app.listen(port);
+// app.listen(port);
+var port = process.env.PORT || 8080
+, host = process.env.YOUR_HOST || "127.0.0.1";
+app.listen(port, function() {
+  console.log('Express server listening on port:', port);
+  // console.log('Express server listening on host:', host);
+});
 console.log('Magic happens at http://localhost:' + port);
