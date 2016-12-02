@@ -29,6 +29,7 @@
                     FlashService.Success('Registration successful', true);
                     $location.path('/login');
                 } else {
+                    console.log(response);
                     FlashService.Error(response.message);
                     vm.dataLoading = false;
                 }

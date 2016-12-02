@@ -46,6 +46,7 @@ app.get('/setup', function(req, res) {
 	var nick = new User({
 		fname: 'vikas',
     lname: 'satpute',
+    email: 'vikas.s.satpute@gmail.com',
     username: 'vikassatpute',
     password: 'vikas123#',
     admin: true
@@ -73,45 +74,19 @@ apiRoutes.post('/register', function(newUser, callback) {
 	console.log(newUser.body);
   var userObj = newUser.body;
 	var me = this;
-  User.findOne({email: newUser.body.email}, function (err, user) {
-      if (err) {
-        console.log('err');
-          return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
-      }
+  User.findOne({email: newUser.body.email}, function(err, user){
+    if (user) {
+      err = 'The email you entered already exists';
+      callback(err);
+    } else {
+      var addUser = new User(newUser.body);
+      addUser.save(function(err) {
+        if (err) throw err;
 
-      if (user) {
-        console.log('user->',user);
-          return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.EMAIL_ALREADY_EXISTS } }));
-      } else {
-        console.log('else user->',user);
-
-          User.save(function (err, user, numberAffected) {
-
-              console.log('save->',err);
-              if (err) {
-                  return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
-              }
-
-              if (numberAffected === 1) {
-
-                  var userProfileModel = new me.UserProfileModel({
-                      email: user.email,
-                      firstName: user.firstName,
-                      lastName: user.lastName
-                  });
-
-                  return callback(err, new me.ApiResponse({
-                      success: true, extras: {
-                          userProfileModel: userProfileModel
-                      }
-                  }));
-              } else {
-                  return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } }));
-              }
-
-          });
-      }
-
+        console.log('User saved successfully');
+        callback.json({ success: true });
+      });
+    }
   });
 });
 // ---------------------------------------------------------
