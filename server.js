@@ -14,10 +14,10 @@ var User   = require('./app/models/user'); // get our mongoose model
 // =================================================================
 // configuration ===================================================
 // =================================================================
+// console.log('process.env','NODE_ENV: ' + config.util.getEnv('NODE_ENV'));
+// console.log('process.env.NODE_ENV',process.env.NODE_ENV);
 var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
-//mongoose.connect(config.database); // connect to database
 var uristring = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || config.database;
-    //'mongodb://vargani:vargani#$#69@ds015636.mlab.com:15636/heroku_4mwp0w3r';
 mongoose.connect(uristring, function (err, res) {
     if (err) {
         console.log ('ERROR connecting to: ' + uristring + '. ' + err);
@@ -68,11 +68,6 @@ app.get('/setup', function(req, res) {
 	});
 });
 
-// basic route (http://localhost:8080)
-// app.get('/', function(req, res) {
-// 	//res.send('Hello! The API is at http://localhost:' + port + '/api');
-// 	res.sendfile('app/index.html');
-// });
 
 // ---------------------------------------------------------
 // get an instance of the router for api routes
@@ -101,12 +96,7 @@ apiRoutes.post('/register', function(newUser, callback) {
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this isnt authenticated)
 // ---------------------------------------------------------
-// http://localhost:8080/api/authenticate
 apiRoutes.post('/authenticate', function(req, res) {
-
-      //console.log('res',res);
-      console.log('req.body-->',req.body);
-      console.log(req.body.username);
   // find the user
   User.findOne({
     username: req.body.username
@@ -149,9 +139,6 @@ apiRoutes.use(function(req, res, next) {
 
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.param('token') || req.headers['x-access-token'];
-  console.log('req.body.token',req.body);
-  console.log("req.param('token')",req.param('token'));
-  console.log("req.headers['x-access-token']",req.headers['x-access-token']);
 	// decode token
 	if (token) {
 
@@ -207,6 +194,4 @@ var port = process.env.PORT || 8080
 , host = process.env.YOUR_HOST || "127.0.0.1";
 app.listen(port, function() {
   console.log('Express server listening on port:', port);
-  // console.log('Express server listening on host:', host);
 });
-//console.log('Magic happens at http://localhost:' + port);

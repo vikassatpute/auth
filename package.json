@@ -1,5 +1,5 @@
 {
-  "name": "node-token-authentication",
+  "name": "fund-banking",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.15.0",
@@ -10,5 +10,19 @@
   },
   "devDependencies": {
     "nodemon": "~1.11.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "fund bankin",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vikassatpute/auth.git"
+  },
+  "author": "vikassatpute",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/vikassatpute/auth/issues"
   }
 }
