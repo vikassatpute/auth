@@ -44,9 +44,12 @@ app.get('/setup', function(req, res) {
 
 	// create a sample user
 	var nick = new User({
-		name: 'Nick Cerminara',
-		password: 'password',
-		admin: true
+		fname: 'vikas',
+    lname: 'satpute',
+    email: 'vikas.s.satpute@gmail.com',
+    username: 'vikassatpute',
+    password: 'vikas123#',
+    admin: true
 	});
 	nick.save(function(err) {
 		if (err) throw err;
@@ -68,44 +71,22 @@ app.get('/setup', function(req, res) {
 var apiRoutes = express.Router();
 
 apiRoutes.post('/register', function(newUser, callback) {
-	cosnole.log(newUser);
+	console.log(newUser.body);
+  var userObj = newUser.body;
 	var me = this;
-  me.userModel.findOne({ email: newUser.email }, function (err, user) {
+  User.findOne({email: newUser.body.email}, function(err, user){
+    if (user) {
+      err = 'The email you entered already exists';
+      callback(err);
+    } else {
+      var addUser = new User(newUser.body);
+      addUser.save(function(err) {
+        if (err) throw err;
 
-      if (err) {
-          return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
-      }
-
-      if (user) {
-          return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.EMAIL_ALREADY_EXISTS } }));
-      } else {
-
-          newUser.save(function (err, user, numberAffected) {
-
-              if (err) {
-                  return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));
-              }
-
-              if (numberAffected === 1) {
-
-                  var userProfileModel = new me.UserProfileModel({
-                      email: user.email,
-                      firstName: user.firstName,
-                      lastName: user.lastName
-                  });
-
-                  return callback(err, new me.ApiResponse({
-                      success: true, extras: {
-                          userProfileModel: userProfileModel
-                      }
-                  }));
-              } else {
-                  return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } }));
-              }
-
-          });
-      }
-
+        console.log('User saved successfully');
+        callback.json({ success: true });
+      });
+    }
   });
 });
 // ---------------------------------------------------------
@@ -114,16 +95,20 @@ apiRoutes.post('/register', function(newUser, callback) {
 // http://localhost:8080/api/authenticate
 apiRoutes.post('/authenticate', function(req, res) {
 
-	// find the user
-	User.findOne({
-		name: req.body.name
-	}, function(err, user) {
+      //console.log('res',res);
+      console.log('req.body-->',req.body);
+      console.log(req.body.username);
+  // find the user
+  User.findOne({
+    username: req.body.username
+  }, function(err, user) {
 
-		if (err) throw err;
+    if (err) throw err;
 
-		if (!user) {
-			res.json({ success: false, message: 'Authentication failed. User not found.' });
-		} else if (user) {
+    if (!user) {
+      res.json({ success: false, message: 'Authentication failed. User not found.' });
+    } else if (user) {
+      console.log(user);
 
 			// check if password matches
 			if (user.password != req.body.password) {
@@ -155,7 +140,9 @@ apiRoutes.use(function(req, res, next) {
 
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.param('token') || req.headers['x-access-token'];
-
+  console.log('req.body.token',req.body);
+  console.log("req.param('token')",req.param('token'));
+  console.log("req.headers['x-access-token']",req.headers['x-access-token']);
 	// decode token
 	if (token) {
 
@@ -192,6 +179,7 @@ apiRoutes.get('/', function(req, res) {
 
 apiRoutes.get('/users', function(req, res) {
 	User.find({}, function(err, users) {
+    console.log(users);
 		res.json(users);
 	});
 });

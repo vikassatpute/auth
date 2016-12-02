@@ -30,6 +30,7 @@
         function loadAllUsers() {
             UserService.GetAll()
                 .then(function (users) {
+                    console.log(users);
                     vm.allUsers = users;
                 });
         }

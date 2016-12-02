@@ -5,7 +5,7 @@
         .module('app')
         .controller('RegisterController', RegisterController);
 
-    RegisterController.$inject = ['UserService', '$location', '$rootScope', 'FlashService'];
+    RegisterController.$inject = ['UserService', '$location', '$rootScope', 'FlashService', '$http'];
     function RegisterController(UserService, $location, $rootScope, FlashService, $http) {
         var vm = this;
 
@@ -13,30 +13,27 @@
 
         function register() {
             vm.dataLoading = true;
-            $http.get("api/register")
-            .then(function(response) {
-                $scope.myWelcome = response.data;
-            });
-            $http({
-                method: 'POST',
-                url: 'api/register',
-                data: vm.user,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function (data, status, headers, config) {
+            // $http({
+            //     method: 'POST',
+            //     url: 'api/register',
+            //     data: vm
+            // }).success(function (data, status, headers, config) {
 
-            }).error(function (data, status, header, config) {
+            // }).error(function (data, status, header, config) {
 
+            // });
+            console.log(vm.user);
+            UserService.Create(vm.user)
+            .then(function (response) {
+                if (response.success) {
+                    FlashService.Success('Registration successful', true);
+                    $location.path('/login');
+                } else {
+                    console.log(response);
+                    FlashService.Error(response.message);
+                    vm.dataLoading = false;
+                }
             });
-            // UserService.Create(vm.user)
-            //     .then(function (response) {
-            //         if (response.success) {
-            //             FlashService.Success('Registration successful', true);
-            //             $location.path('/login');
-            //         } else {
-            //             FlashService.Error(response.message);
-            //             vm.dataLoading = false;
-            //         }
-            //     });
         }
     }
 
