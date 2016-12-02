@@ -15,7 +15,16 @@ var User   = require('./app/models/user'); // get our mongoose model
 // configuration ===================================================
 // =================================================================
 var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
-mongoose.connect(config.database); // connect to database
+//mongoose.connect(config.database); // connect to database
+var uristring = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || config.database;
+    //'mongodb://vargani:vargani#$#69@ds015636.mlab.com:15636/heroku_4mwp0w3r';
+mongoose.connect(uristring, function (err, res) {
+    if (err) {
+        console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+    } else {
+        console.log ('Succeeded connected to: ' + uristring);
+    }
+});
 app.set('superSecret', config.secret); // secret variable
 
 // use body parser so we can get info from POST and/or URL parameters
@@ -200,4 +209,4 @@ app.listen(port, function() {
   console.log('Express server listening on port:', port);
   // console.log('Express server listening on host:', host);
 });
-console.log('Magic happens at http://localhost:' + port);
+//console.log('Magic happens at http://localhost:' + port);
